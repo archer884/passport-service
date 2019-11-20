@@ -66,7 +66,7 @@ impl Sex {
 }
 
 #[derive(Clone, Debug, Serialize)]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 pub struct PassportInfo {
     issuer: Checked<String>,
     nationality: Checked<String>,
@@ -127,7 +127,7 @@ impl PassportInfo {
 }
 
 #[derive(Clone, Debug, Serialize)]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 struct Checked<T> {
     data: T,
     is_valid: bool,
@@ -191,7 +191,11 @@ fn read_names(s: &str) -> (String, String) {
     let mut parts = s.split("<<");
     (
         parts.next().expect("Empty name field").into(),
-        parts.map(|part| part.replace("<", " ")).collect::<String>().trim().into(),
+        parts
+            .map(|part| part.replace("<", " "))
+            .collect::<String>()
+            .trim()
+            .into(),
     )
 }
 

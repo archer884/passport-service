@@ -1,5 +1,5 @@
-use std::path::Path;
 use leptess::{leptonica, tesseract::TessApi};
+use std::path::Path;
 
 pub struct Reader {
     api: TessApi,

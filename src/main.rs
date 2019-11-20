@@ -1,9 +1,9 @@
-mod reader;
 mod passport;
+mod reader;
 mod weights;
 
+use actix_web::{web, HttpRequest, HttpResponse, Responder};
 use std::fmt::{self, Display};
-use actix_web::{web, HttpResponse, HttpRequest, Responder};
 use std::path::{Path, PathBuf};
 use structopt::StructOpt;
 
@@ -60,13 +60,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn read_mrz(request: HttpRequest) -> actix_web::Result<impl Responder> {
-    use reader::Reader;
     use passport::{PassportData, PassportInfo};
+    use reader::Reader;
 
-    let file = request.match_info()
+    let file = request
+        .match_info()
         .get("file")
         .expect("How the hell did you get routed here?!");
-    
+
     let (elapsed, raw) = time!({
         let mut reader = Reader::new();
         reader.read(build_path(&file))
