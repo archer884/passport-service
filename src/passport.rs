@@ -1,5 +1,4 @@
 use serde::Serialize;
-use tide::response::{IntoResponse, Response};
 
 #[derive(Clone, Debug)]
 pub struct PassportData {
@@ -127,18 +126,6 @@ impl PassportInfo {
     }
 }
 
-impl IntoResponse for PassportInfo {
-    fn into_response(self) -> Response {
-        use http_service::Body;
-        let serialized = serde_json::to_string(&self).unwrap();
-        http::Response::builder()
-            .status(http::status::StatusCode::OK)
-            .header("Content-Type", "application/json; charset=utf-8")
-            .body(Body::from(serialized.into_bytes()))
-            .unwrap()
-    }
-}
-
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all="camelCase")]
 struct Checked<T> {
@@ -206,4 +193,15 @@ fn read_names(s: &str) -> (String, String) {
         parts.next().expect("Empty name field").into(),
         parts.map(|part| part.replace("<", " ")).collect::<String>().trim().into(),
     )
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn check() {
+        assert!(super::check("1204159", super::numeric).is_valid());
+        assert!(super::check("7408122", super::numeric).is_valid());
+        assert!(super::check("ZE184226B<<<<<1", super::alphanumeric).is_valid());
+        assert!(super::check("<<<<<<<<<<<<<<<", super::alphanumeric).is_valid());
+    }
 }
