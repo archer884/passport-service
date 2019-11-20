@@ -27,7 +27,7 @@ impl Iterator for Weights {
                 Some(1)
             }
 
-            _ => unreachable!("Please do not call this code, kthx.")
+            _ => unreachable!("Please do not call this code, kthx."),
         }
     }
 }
