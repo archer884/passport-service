@@ -187,7 +187,6 @@ fn check(s: impl AsRef<str>, filter: impl Fn(&str) -> Vec<i32>) -> Checked<Strin
 }
 
 fn read_names(s: &str) -> (String, String) {
-    // FIXME: this will asplode on an empty string.
     let mut parts = s.split("<<");
     (
         parts.next().expect("Empty name field").into(),
@@ -207,5 +206,74 @@ mod tests {
         assert!(super::check("7408122", super::numeric).is_valid());
         assert!(super::check("ZE184226B<<<<<1", super::alphanumeric).is_valid());
         assert!(super::check("<<<<<<<<<<<<<<<", super::alphanumeric).is_valid());
+    }
+
+    #[test]
+    fn read_passports() {
+        struct TestCase {
+            file: &'static str,
+            country: &'static str,
+            number: &'static str,
+            dob: &'static str,
+            expires: &'static str,
+            nationality: &'static str,
+            sex: &'static str,
+            names: &'static str,
+            surname: &'static str,
+            personal_number: &'static str,
+        }
+
+        let test_cases: &[TestCase] = &[
+            TestCase {
+                file: "43_pass-fra.jpg",
+                country: "FRA",
+                number: "08CD503380",
+                dob: "601004",
+                expires: "180605",
+                nationality: "FRA",
+                sex: "M",
+                names: "Christophe",
+                surname: "Ulysse",
+                personal_number: "",
+            },
+            TestCase {
+                file: "43_pass-twn.jpg",
+                country: "TWN",
+                number: "M00000426",
+                dob: "680302",
+                expires: "980104",
+                nationality: "TWN",
+                sex: "M",
+                names: "Chien Sheng",
+                surname: "Lin",
+                personal_number: "F122187664",
+            },
+            TestCase {
+                file: "100_pass-fin.jpg",
+                country: "FIN",
+                number: "XP8271602",
+                dob: "711221",
+                expires: "110821",
+                nationality: "FIN",
+                sex: "F",
+                names: "Maria Olivia",
+                surname: "Virtanen",
+                personal_number: "426U",
+            },
+            TestCase {
+                file: "100_pass-uto.jpg",
+                country: "UTO",
+                number: "L898902C3",
+                dob: "740812",
+                expires: "150415",
+                nationality: "UTO",
+                sex: "F",
+                names: "Anna Maria",
+                surname: "Eriksson",
+                personal_number: "ZE184226B",
+            },
+        ];
+
+        for case in test_cases {}
     }
 }
