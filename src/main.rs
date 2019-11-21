@@ -1,3 +1,4 @@
+mod normalization;
 mod passport;
 mod reader;
 mod weights;
