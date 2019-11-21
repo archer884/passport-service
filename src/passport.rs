@@ -25,6 +25,10 @@ impl PassportData {
             .map(|u| u as char)
             .collect();
 
+        if s.len() < 88 {
+            return None;
+        }
+
         let offset = s.len() - 88;
         let row_1 = &s[offset..(offset + 44)];
 
@@ -149,9 +153,10 @@ impl<T> Checked<T> {
 fn alphanumeric(s: &str) -> Vec<i32> {
     s.bytes()
         .map(|u| match u {
-            u if u.is_ascii_alphabetic() => u.to_ascii_uppercase() - b'A' + 10,
             u if u == b'<' => 0,
-            u => u - b'0',
+            u if u.is_ascii_alphabetic() => u.to_ascii_uppercase() - b'A' + 10,
+            u if u >= b'0' && u <= b'9' => u - b'0',
+            u => u,
         })
         .filter_map(|u| if u == b'<' { None } else { Some(u as i32) })
         .collect()
@@ -164,7 +169,8 @@ fn numeric(s: &str) -> Vec<i32> {
             b'l' | b'I' | b'i' => b'1',
             b'B' => b'8',
             x => x,
-        } - b'0')
+        })
+        .map(|u| if u >= b'0' && u <= b'9' { u - b'0' } else { u })
         .map(|u| u as i32)
         .collect()
 }
