@@ -49,12 +49,17 @@ impl actix_web::error::ResponseError for ApplicationError {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    use actix_cors::Cors;
     use actix_web::{App, HttpServer};
 
-    HttpServer::new(|| App::new().route("/api/passport/{file}", web::get().to(read_mrz)))
-        .bind("127.0.0.1:8080")
-        .expect("Unable to bind server port")
-        .run()?;
+    HttpServer::new(|| {
+        App::new()
+            .wrap(Cors::default())
+            .route("/api/passport/{file}", web::get().to(read_mrz))
+    })
+    .bind("127.0.0.1:8080")
+    .expect("Unable to bind server port")
+    .run()?;
 
     Ok(())
 }
